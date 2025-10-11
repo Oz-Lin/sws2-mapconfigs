@@ -1,3 +1,8 @@
+> [!IMPORTANT]  
+> 🔒 THIS REPOSITORY HAS BEEN **ARCHIVED** AND MAY BE DELETED.  
+> A new version of **SwiftlyS2**, with **C# plugin support**, is now available.  
+> 👉 [**CLICK HERE TO GET LATEST PLUGIN VERSION AVAILABLE (C#).**](https://github.com/criskkky/sws2-mapconfigs)
+
   <h3 align="center">[Swiftly] MapConfigs</h3>
 
   <p align="center">
