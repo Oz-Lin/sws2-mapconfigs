@@ -68,9 +68,7 @@ public class MapConfigsListener
     
     if (configFiles.Length == 0)
     {
-      _logger.LogWarning("✖\n✖\n✖\n✖\n✖");
       _logger.LogWarning("No configuration files found in {FolderPath}", _configFolderPath);
-      _logger.LogWarning("✖\n✖\n✖\n✖\n✖");
       return;
     }
 
@@ -93,9 +91,7 @@ public class MapConfigsListener
         
         var execCommand = $"exec MapConfigs/{fileName}.cfg";
         
-        _logger.LogInformation("✔\n✔\n✔\n✔\n✔");
         _logger.LogInformation("Executing command => {ExecCommand}", execCommand);
-        _logger.LogInformation("✔\n✔\n✔\n✔\n✔");
         
         _engine.ExecuteCommand(execCommand);
         return;
@@ -103,8 +99,6 @@ public class MapConfigsListener
     }
 
     // No matching config file found
-    _logger.LogWarning("✖\n✖\n✖\n✖\n✖");
     _logger.LogWarning("No configuration file found for this map: {MapName}", mapName);
-    _logger.LogWarning("✖\n✖\n✖\n✖\n✖");
   }
 }
