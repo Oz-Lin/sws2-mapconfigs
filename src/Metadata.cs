@@ -4,7 +4,7 @@ namespace MapConfigs;
 
 [PluginMetadata(
     Id = "MapConfigs",
-    Version = "1.0.0",
+    Version = "1.0.1",
     Name = "MapConfigs",
     Author = "criskkky",
     Description = "Make individualized configuration files for each map, or connect them all to a common prefix configuration.",
