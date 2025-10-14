@@ -12,14 +12,6 @@ public partial class MapConfigs : BasePlugin
 
   private IServiceProvider? _provider;
 
-  public override void ConfigureSharedServices(IServiceCollection sharedServices)
-  {
-  }
-
-  public override void UseSharedServices(IServiceProvider sharedProvider)
-  {
-  }
-
   public override void Load(bool hotReload)
   {
     var collection = new ServiceCollection()
