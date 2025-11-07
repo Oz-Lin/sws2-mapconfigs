@@ -55,8 +55,7 @@ MapConfigs/
 
 ### Requeriments 📄
 1. CS2 Server 🤡
-2. [Metamod 2.X](https://www.sourcemm.net/downloads.php/?branch=master)
-3. [SwiftlyS2](https://github.com/swiftly-solution/swiftlys2/releases/latest)
+2. [SwiftlyS2](https://github.com/swiftly-solution/swiftlys2/releases/latest)
 
 ### Installation 📦
 1. Download [latest release](https://github.com/criskkky/sws2-MapConfigs/releases/latest).
