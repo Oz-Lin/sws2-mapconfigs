@@ -1,86 +1,73 @@
-  <h3 align="center">[SwiftlyS2] MapConfigs</h3>
+<div align="center">
 
-  <p align="center">
-    Make individualized configuration files for each map, or connect them all to a common prefix configuration.
-    <br/>
-    <a href="https://github.com/criskkky/sws2-MapConfigs/issues">Report Bug</a>
-    -
-    <a href="https://github.com/criskkky/sws2-MapConfigs/issues">Request Feature</a>
-    -
-    <a href="https://github.com/criskkky/sws2-MapConfigs/pulls">Contribute Code</a>
-  </p>
-</p>
-  <p align="center">
-  <img alt="Downloads" src="https://img.shields.io/github/downloads/criskkky/sws2-MapConfigs/total?style=for-the-badge&color=cyan">
-  <img alt="Contributors" src="https://img.shields.io/github/contributors/criskkky/sws2-MapConfigs?color=cyan&style=for-the-badge">
-  <img alt="Issues" src="https://img.shields.io/github/issues/criskkky/sws2-MapConfigs?style=for-the-badge&color=cyan">
-  <br>
-  <sub>Made by <a href="https://github.com/criskkky" target="_blank">@criskkky</a> with ❤️</sub>
-</p>
+# [SwiftlyS2] MapConfigs
 
-### How it works? 🤨
-This CS2 plugin applies configurations to the current map, initiating the search from longer configurations to shorter ones. This approach allows you to set up specific map configurations or connect them all using a common prefix.
+[![GitHub Release](https://img.shields.io/github/v/release/criskkky/sws2-mapconfigs?color=FFFFFF&style=flat-square)](https://github.com/criskkky/sws2-mapconfigs/releases/latest)
+[![GitHub Issues](https://img.shields.io/github/issues/criskkky/sws2-mapconfigs?color=FF0000&style=flat-square)](https://github.com/criskkky/sws2-mapconfigs/issues)
+[![GitHub Downloads](https://img.shields.io/github/downloads/criskkky/sws2-mapconfigs/total?color=blue&style=flat-square)](https://github.com/criskkky/sws2-mapconfigs/releases)
+[![GitHub Stars](https://img.shields.io/github/stars/criskkky/sws2-mapconfigs?style=social)](https://github.com/criskkky/sws2-mapconfigs/stargazers)<br/>
+  <sub>Made with ❤️ by <a href="https://github.com/criskkky" rel="noopener noreferrer" target="_blank">criskkky</a></sub>
+  <br/>
+</div>
 
-Your specific map configurations must be located in `/game/csgo/cfg/MapConfigs/HERE.cfg` where HERE is the map name or prefix.
+## Overview
 
----
-**For example, given the following maplist:**
-```plaintext
-aim_deagle_lego
-aim_redline_s2
-aim_awp_lego
-aim_headshot_kill
-de_dust2
-de_mirage
-```
+Execute individualized configuration files for each map, or connect them all to a common prefix configuration.
 
-**And assuming your configuration files are named:**
+## Download Shortcuts
+<ul>
+  <li>
+    <code>📦</code>
+    <strong>&nbspDownload Latest Plugin Version</strong> ⇢
+    <a href="https://github.com/criskkky/sws2-mapconfigs/releases/latest" target="_blank" rel="noopener noreferrer">Click Here</a>
+  </li>
+  <li>
+    <code>⚙️</code>
+    <strong>&nbspDownload Latest SwiftlyS2 Version</strong> ⇢
+    <a href="https://github.com/swiftly-solution/swiftlys2/releases/latest" target="_blank" rel="noopener noreferrer">Click Here</a>
+  </li>
+</ul>
 
-```plaintext
-MapConfigs/
-├── aim_deagle.cfg
-├── aim_awp.cfg
-├── aim_.cfg
-└── de_dust2.cfg
-```
+## Features
+- **Automatic Map Configuration**: Automatically applies specific configuration files when a map loads based on the map name.
+- **Flexible Matching**: Supports partial name matching, allowing configurations for map prefixes or specific maps.
+- **Folder Management**: Automatically creates the configuration folder if it doesn't exist.
+- **Logging**: Provides detailed logging for map loading and configuration application.
 
-**The plugin will operate as follows:**
-- ✔ If the current map is `aim_deagle_lego`, it will execute `aim_deagle.cfg`.
-- ✔ If the current map is `aim_awp_lego`, it will execute `aim_awp.cfg`.
-- ✔ If the current map is `aim_redline_s2`, it will execute `aim_.cfg`.
-- ✔ If the current map is `aim_headshot_kill`, it will execute `aim_.cfg`.
-- ✔ If the current map is `de_dust2`, it will execute `de_dust2.cfg`.
-- ❌ If the current map is `de_mirage`, it will execute nothing 'cos you don't made a `de_.cfg` or `de_mirage.cfg`.
----
+## Screenshots
+> No screenshots needed for this plugin.
 
-### Requeriments 📄
-1. CS2 Server 🤡
-2. [SwiftlyS2](https://github.com/swiftly-solution/swiftlys2/releases/latest)
+## Plugin Setup
+> [!WARNING]
+> Make sure you **have installed SwiftlyS2 Framework** before proceeding.
 
-### Installation 📦
-1. Download [latest release](https://github.com/criskkky/sws2-MapConfigs/releases/latest).
-2. Extract zip content into your `/addons/swiftlys2/plugins` directory.
-3. Do an initial plugin load to generate the necessary files or manually create the `/game/csgo/cfg/MapConfigs/` directory.
-4. Setup your configurations per map inside the generated directory ensuring that the file name matches the map name or prefix.
-5. Ready!
+1. Download and extract the latest plugin version into your `swiftlys2/plugins` folder.
+2. Perform an initial run to allow folder generation.
+3. The configuration folder will be created at: `game/csgo/cfg/MapConfigs`
+4. Create your map-specific configuration files (e.g., `de_dust2.cfg` or `de_.cfg`) in this folder.
+5. The plugin will automatically apply the matching configuration when the corresponding map loads.
+6. Enjoy!
 
-### Example 👨🏻‍🏫
+## Configuration Example
+
 ```cfg
-// Config for de_.cfg
+// Path: /cfg/MapConfigs/de_.cfg
+// File: de_.cfg
 mp_freezetime 3
 mp_autoteambalance 0
 mp_autokick 0
 exec otherconfigmaybe.cfg
 ```
-👀 Don't forget to set the correct filename; for example, in this case, the file must be named `de_.cfg`.
 
-### Configuring the plugin 👨🏻‍💻
-- Doesn't need additional config than the one explained above ✅
+## Backend Logic (How It Works)
+1. On plugin load, subscribes to the map load event.
+2. When a map loads, ensures the `cfg/MapConfigs` folder exists.
+3. Scans the folder for `.cfg` files and sorts them by filename length (longest first).
+4. Searches for the first config file whose name is contained in the map name.
+5. Executes the matching config file using the `exec` command.
 
-### Todo List 🎯
-- Fix [issues](https://github.com/criskkky/sws2-MapConfigs/issues) if there's any
+## Support and Feedback
+Feel free to [open an issue](https://github.com/criskkky/sws2-mapconfigs/issues/new/choose) for any bugs or feature requests. If it's all working fine, consider starring the repository to show your support!
 
-### Problems using this? 😔
-If you really need help with something that isn't explained here reach me through:
-1. @crisky [Discord](<https://discord.com/users/404372759028957231>) / [GitHub](<https://github.com/criskkky>)
-2. Opening an [issue](https://github.com/criskkky/sws2-MapConfigs/issues)
+## Contribution Guidelines
+Contributions are welcome only if they align with the plugin's purpose. For major changes, please open an issue first to discuss what you would like to change.
