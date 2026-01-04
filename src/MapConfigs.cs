@@ -1,33 +1,43 @@
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using SwiftlyS2.Shared.Plugins;
 using SwiftlyS2.Shared;
+using SwiftlyS2.Shared.Scheduler;
+using SwiftlyS2.Shared.Services;
 
 namespace MapConfigs;
 
-public partial class MapConfigs : BasePlugin
+public partial class MapConfigs(ISwiftlyCore core) : BasePlugin(core)
 {
-  public MapConfigs(ISwiftlyCore core) : base(core)
-  {
-  }
-
-  private IServiceProvider? _provider;
+  private ILogger<MapConfigs> _logger = null!;
+  private IEngineService _engine = null!;
+  private ISchedulerService _scheduler = null!;
+  private string _configFolderPath = string.Empty;
 
   public override void Load(bool hotReload)
   {
-    var collection = new ServiceCollection()
+    // Create logger using LoggerFactory
+    _logger = Core.LoggerFactory.CreateLogger<MapConfigs>();
+    
+    // Get services from DI container
+    var services = new ServiceCollection()
       .AddSwiftly(Core)
-      .AddSingleton<MapConfigsListener>();
+      .BuildServiceProvider();
+    
+    _engine = services.GetRequiredService<IEngineService>();
+    _scheduler = services.GetRequiredService<ISchedulerService>();
 
-    _provider = collection.BuildServiceProvider();
-    _provider.GetRequiredService<MapConfigsListener>();
+    // Use Core.CSGODirectory for reliable cross-platform path
+    _configFolderPath = Path.Combine(Core.CSGODirectory, "cfg", "MapConfigs");
+    _logger.LogInformation("MapConfigs folder path: {FolderPath}", _configFolderPath);
+
+    // Subscribe to map load event
+    Core.Event.OnMapLoad += OnMapLoad;
   }
-
+  
   public override void Unload()
   {
-    if (_provider is not null && _provider is IDisposable disposable)
-    {
-      disposable.Dispose();
-      _provider = null;
-    }
+    // Unsubscribe from events to prevent memory leaks
+    Core.Event.OnMapLoad -= OnMapLoad;
   }
 }
