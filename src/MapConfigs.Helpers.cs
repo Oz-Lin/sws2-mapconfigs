@@ -8,76 +8,93 @@ public partial class MapConfigs
   {
     try
     {
-      _logger.LogInformation("Checking if folder exists: {FolderPath}", _configFolderPath);
-
-      if (!Directory.Exists(_configFolderPath))
-      {
-        _logger.LogWarning("Missing folder: {FolderPath}. Don't worry, creating it now.", _configFolderPath);
-        Directory.CreateDirectory(_configFolderPath);
-        _logger.LogInformation("Successfully created folder: {FolderPath}", _configFolderPath);
-      }
-      else
-      {
-        _logger.LogInformation("Folder exists: {FolderPath}", _configFolderPath);
-      }
+      EnsureFolderExists(_mapConfigsFolderPath);
+      EnsureFolderExists(_prefixesFolderPath);
+      EnsureFolderExists(_forcedFolderPath);
     }
     catch (Exception ex)
     {
-      _logger.LogError(ex, "Failed to create or access configuration folder: {FolderPath}", _configFolderPath);
+      _logger.LogError(ex, "Failed to create or access configuration folders under: {FolderPath}", _mapConfigsFolderPath);
     }
   }
 
-  private void ApplyMapConfig(string mapName)
+  private void EnsureFolderExists(string folderPath)
+  {
+    _logger.LogInformation("Checking if folder exists: {FolderPath}", folderPath);
+
+    if (!Directory.Exists(folderPath))
+    {
+      _logger.LogWarning("Missing folder: {FolderPath}. Don't worry, creating it now.", folderPath);
+      Directory.CreateDirectory(folderPath);
+      _logger.LogInformation("Successfully created folder: {FolderPath}", folderPath);
+    }
+    else
+    {
+      _logger.LogInformation("Folder exists: {FolderPath}", folderPath);
+    }
+  }
+
+  private void ApplyMapConfigsOnMapLoad(string mapName)
   {
     try
     {
-      // Get all .cfg files in the MapConfigs folder
-      if (!Directory.Exists(_configFolderPath))
-      {
-        _logger.LogWarning("Configuration folder does not exist: {FolderPath}", _configFolderPath);
-        return;
-      }
-
-      var configFiles = Directory.GetFiles(_configFolderPath, "*.cfg");
-    
-      if (configFiles.Length == 0)
-      {
-        _logger.LogWarning("No configuration files found in {FolderPath}", _configFolderPath);
-        return;
-      }
-
-      // Sort files by filename length in descending order (longest first)
-      var sortedConfigFiles = configFiles
-        .OrderByDescending(file => Path.GetFileNameWithoutExtension(file).Length)
-        .ToArray();
-
-      // Search for the first config file whose name (without extension) is contained in the map name
-      foreach (var configFile in sortedConfigFiles)
-      {
-        var fileName = Path.GetFileNameWithoutExtension(configFile);
-      
-        // Check if the map name contains the config file name
-        if (mapName.Contains(fileName, StringComparison.OrdinalIgnoreCase))
-        {
-          _logger.LogInformation("Map detected => {MapName}", mapName);
-          _logger.LogInformation("Found => {FileName}", fileName);
-          _logger.LogInformation("Executing => MapConfigs/{FileName}.cfg", fileName);
-        
-          var execCommand = $"exec MapConfigs/{fileName}.cfg";
-        
-          _logger.LogInformation("Executing command => {ExecCommand}", execCommand);
-        
-          _engine.ExecuteCommand(execCommand);
-          return;
-        }
-      }
-
-      // No matching config file found
-      _logger.LogWarning("No configuration file found for this map: {MapName}", mapName);
+      ExecutePrefixConfigurationFile(mapName);
+      ExecuteSpecificMapConfigurationFile(mapName);
     }
     catch (Exception ex)
     {
-      _logger.LogError(ex, "Error while applying map configuration for: {MapName}", mapName);
+      _logger.LogError(ex, "Error while applying map-load configuration for: {MapName}", mapName);
     }
+  }
+
+  private void ExecutePrefixConfigurationFile(string mapName)
+  {
+    var prefix = GetMapPrefix(mapName);
+    if (string.IsNullOrWhiteSpace(prefix))
+      return;
+
+    var prefixCfgPath = $"mapconfigs/prefixes/{prefix}.cfg";
+    ExecIfExists(prefixCfgPath);
+  }
+
+  private void ExecuteSpecificMapConfigurationFile(string mapName)
+  {
+    var mapCfgPath = $"mapconfigs/{mapName}.cfg";
+    ExecIfExists(mapCfgPath);
+  }
+
+  private void ExecuteForcedMapConfigurationFile(string mapName)
+  {
+    var forcedCfgPath = $"mapconfigs/forced/{mapName}.cfg";
+    ExecIfExists(forcedCfgPath);
+  }
+
+  private string GetMapPrefix(string mapName)
+  {
+    if (string.IsNullOrWhiteSpace(mapName))
+      return string.Empty;
+
+    var idx = mapName.IndexOf('_');
+    if (idx <= 0)
+      return string.Empty;
+
+    return mapName[..(idx + 1)];
+  }
+
+  private void ExecIfExists(string cfgRelativeToCfgFolder)
+  {
+    var normalized = cfgRelativeToCfgFolder.Replace('\\', '/').TrimStart('/');
+
+    var diskPath = Path.Combine(Core.CSGODirectory, "cfg", normalized.Replace('/', Path.DirectorySeparatorChar));
+
+    if (!File.Exists(diskPath))
+    {
+      _logger.LogDebug("Config not found (skipping): {Cfg}", normalized);
+      return;
+    }
+
+    var command = $"exec {normalized}";
+    _logger.LogInformation("Executing => {Command}", command);
+    _engine.ExecuteCommand(command);
   }
 }
