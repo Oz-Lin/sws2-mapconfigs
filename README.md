@@ -43,10 +43,11 @@ Execute individualized configuration files for each map, or connect them all to 
 
 1. Download and extract the latest plugin version into your `swiftlys2/plugins` folder.
 2. Perform an initial run to allow folder generation.
-3. The configuration folder will be created at: `game/csgo/cfg/MapConfigs`
-4. Create your map-specific configuration files (e.g., `de_dust2.cfg` or `de_.cfg`) in this folder.
-5. The plugin will automatically apply the matching configuration when the corresponding map loads.
-6. Enjoy!
+3. The configuration folder will be created at: `game/csgo/cfg/mapconfigs`
+4. Create your map-prefix configuration files (e.g., `de_.cfg`) in the prefix folder
+5. Create your map-specific configuration files (e.g., `de_dust2.cfg`) in this folder.
+6. The plugin will automatically apply the matching configuration when the corresponding map loads.
+7. Enjoy!
 
 ## Configuration Example
 
