@@ -6,7 +6,7 @@
 [![GitHub Issues](https://img.shields.io/github/issues/criskkky/sws2-mapconfigs?color=FF0000&style=flat-square)](https://github.com/criskkky/sws2-mapconfigs/issues)
 [![GitHub Downloads](https://img.shields.io/github/downloads/criskkky/sws2-mapconfigs/total?color=blue&style=flat-square)](https://github.com/criskkky/sws2-mapconfigs/releases)
 [![GitHub Stars](https://img.shields.io/github/stars/criskkky/sws2-mapconfigs?style=social)](https://github.com/criskkky/sws2-mapconfigs/stargazers)<br/>
-  <sub>Made with ❤️ by <a href="https://github.com/criskkky" rel="noopener noreferrer" target="_blank">criskkky</a></sub>
+  <sub>Made with ❤️ by <a href="https://github.com/criskkky" rel="noopener noreferrer" target="_blank">criskkky</a> and modified by <a href="https://github.com/oz-lin" rel="noopener noreferrer" target="_blank">oz-lin</a></sub>
   <br/>
 </div>
 
@@ -51,20 +51,43 @@ Execute individualized configuration files for each map, or connect them all to 
 ## Configuration Example
 
 ```cfg
-// Path: /cfg/MapConfigs/de_.cfg
+// Path: /cfg/mapconfigs/prefix/de_.cfg
 // File: de_.cfg
 mp_freezetime 3
 mp_autoteambalance 0
 mp_autokick 0
 exec otherconfigmaybe.cfg
 ```
+```cfg
+// Path: /cfg/mapconfigs/de_dust2.cfg
+// File: de_dust2.cfg
+// cfg with exact map name overrides the de_ prefix above
+mp_freezetime 5
+mp_autoteambalance 0
+mp_autokick 0
+bot_quota 10
+exec otherconfigmaybe.cfg
+```
+```cfg
+// Path: /cfg/mapconfigs/forced/de_why_this_map_keeps_changing_my_cvar.cfg
+// File: de_why_this_map_keeps_changing_my_cvar.cfg
+// executes every round start
+mp_freezetime 5
+mp_autoteambalance 0
+mp_autokick 0
+bot_quota 10
+exec otherconfigmaybe.cfg
+```
 
 ## Backend Logic (How It Works)
-1. On plugin load, subscribes to the map load event.
-2. When a map loads, ensures the `cfg/MapConfigs` folder exists.
-3. Scans the folder for `.cfg` files and sorts them by filename length (longest first).
-4. Searches for the first config file whose name is contained in the map name.
-5. Executes the matching config file using the `exec` command.
+Rework to adapt https://github.com/SlashPlayGG/MapConfigurator 
+1. Install the MapConfigurator plugin to enable per-map configs.
+2. Map-specific config files live in csgo/cfg/mapconfigs/.
+3. A map's config (mapname.cfg) is executed once the map is fully loaded and will overwrite values from server.cfg or gamemode configs.
+4. Files for common maps are pre-created (empty) — add variables as needed.
+5. To add a config for a new map: create cfg/mapconfigs/<mapname>.cfg; it loads next time the map is played.
+6. For prefix-wide settings (e.g., de_): create cfg/mapconfigs/prefixes/de_.cfg.
+7. For per-round forced overrides (use sparingly): create cfg/mapconfigs/forced/<mapname>.cfg — executed every round after freeze time.
 
 ## Support and Feedback
 Feel free to [open an issue](https://github.com/criskkky/sws2-mapconfigs/issues/new/choose) for any bugs or feature requests. If it's all working fine, consider starring the repository to show your support!
