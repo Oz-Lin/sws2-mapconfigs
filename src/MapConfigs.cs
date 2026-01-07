@@ -2,6 +2,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SwiftlyS2.Shared.Plugins;
 using SwiftlyS2.Shared;
+using SwiftlyS2.Shared.Events;
+using SwiftlyS2.Shared.GameEventDefinitions;
 using SwiftlyS2.Shared.Scheduler;
 using SwiftlyS2.Shared.Services;
 
@@ -42,11 +44,17 @@ public partial class MapConfigs(ISwiftlyCore core) : BasePlugin(core)
 
     // Subscribe to map load event
     Core.Event.OnMapLoad += OnMapLoad;
+
+    Core.GameEvent.HookPre<EventRoundFreezeEnd>(OnRoundFreezeEnd);
+    // Hook round freeze end for forced per-round configs
+    Core.GameEvent.HookPost<EventRoundFreezeEnd>(OnRoundFreezeEnd);
   }
 
   public override void Unload()
   {
     // Unsubscribe from events to prevent memory leaks
     Core.Event.OnMapLoad -= OnMapLoad;
+    Core.GameEvent.UnhookPre<EventRoundFreezeEnd>();
+    Core.GameEvent.UnhookPost<EventRoundFreezeEnd>();
   }
 }

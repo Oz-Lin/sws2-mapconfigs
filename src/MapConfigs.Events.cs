@@ -1,5 +1,8 @@
 using Microsoft.Extensions.Logging;
 using SwiftlyS2.Shared.Events;
+using SwiftlyS2.Shared;
+using SwiftlyS2.Shared.GameEventDefinitions;
+using SwiftlyS2.Shared.Misc;
 
 namespace MapConfigs;
 
@@ -41,5 +44,19 @@ public partial class MapConfigs
     }
 
     _scheduler.NextTick(Tick);
+  }
+
+  private HookResult OnRoundFreezeEnd(EventRoundFreezeEnd ev)
+  {
+    try
+    {
+      ExecuteForcedMapConfigurationFile();
+    }
+    catch (Exception ex)
+    {
+            _logger.LogError(ex, "Error while applying forced configuration");// for: {MapName}", mapName);
+    }
+
+    return HookResult.Continue;
   }
 }

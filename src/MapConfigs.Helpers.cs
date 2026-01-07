@@ -4,6 +4,8 @@ namespace MapConfigs;
 
 public partial class MapConfigs
 {
+  private string _forcedMapName = string.Empty;
+
   private void EnsureConfigFolderExists()
   {
     try
@@ -40,6 +42,7 @@ public partial class MapConfigs
     {
       ExecutePrefixConfigurationFile(mapName);
       ExecuteSpecificMapConfigurationFile(mapName);
+      _forcedMapName = mapName;
     }
     catch (Exception ex)
     {
@@ -63,9 +66,12 @@ public partial class MapConfigs
     ExecIfExists(mapCfgPath);
   }
 
-  private void ExecuteForcedMapConfigurationFile(string mapName)
+  private void ExecuteForcedMapConfigurationFile()
   {
-    var forcedCfgPath = $"mapconfigs/forced/{mapName}.cfg";
+    if (string.IsNullOrWhiteSpace(_forcedMapName))
+      return;
+
+    var forcedCfgPath = $"mapconfigs/forced/{_forcedMapName}.cfg";
     ExecIfExists(forcedCfgPath);
   }
 
